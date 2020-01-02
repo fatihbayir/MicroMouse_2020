@@ -112,26 +112,26 @@ void move_toward_goal()
 {
     if(facing == 0) // up
     {
-        if(maze[current_row-1][current_column][0]==(maze[current_row][current_column][0]-1))
+        if(goal_maze[current_row-1][current_column]==(goal_maze[current_row][current_column]-1))
         {
             go_forward(FRONT_BACK_BLOCK_DISTANCE);
             current_row--;
         }
-        else if(maze[current_row][current_column-1][0]==(maze[current_row][current_column][0]-1))
+        else if(goal_maze[current_row][current_column-1]==(goal_maze[current_row][current_column]-1))
         {
             turn_left();
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
             facing = 1;
             current_column--;
         }
-        else if(maze[current_row][current_column+1][0]==(maze[current_row][current_column][0]-1))
+        else if(goal_maze[current_row][current_column+1]==(goal_maze[current_row][current_column]-1))
         {
             turn_right();
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
             facing = 2;
             current_column++;
         }
-        else if(maze[current_row+1][current_column][0]==(maze[current_row][current_column][0]-1))
+        else if(goal_maze[current_row+1][current_column][0]==(goal_maze[current_row][current_column]-1))
         {
             go_backward(FRONT_BACK_BLOCK_DISTANCE);
             current_row++;
@@ -139,26 +139,26 @@ void move_toward_goal()
     }
     else if(facing == 1) // left
     {
-        if(maze[current_row][current_column-1][0]==(maze[current_row][current_column][0]-1))
+        if(goal_maze[current_row][current_column-1]==(goal_maze[current_row][current_column]-1))
         {
             go_forward(FRONT_BACK_BLOCK_DISTANCE);
             current_column--;
         }
-        else if(maze[current_row+1][current_column][0]==(maze[current_row][current_column][0]-1))
+        else if(goal_maze[current_row+1][current_column]==(goal_maze[current_row][current_column]-1))
         {
             turn_left();
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
             facing = 3;
             current_row++;
         }
-        else if(maze[current_row-1][current_column][0]==(maze[current_row][current_column][0]-1))
+        else if(goal_maze[current_row-1][current_column]==(goal_maze[current_row][current_column]-1))
         {
             turn_right();
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
             facing = 0;
             current_row--;
         }
-        else if(maze[current_row][current_column+1][0]==(maze[current_row][current_column][0]-1))
+        else if(goal_maze[current_row][current_column+1]==(goal_maze[current_row][current_column]-1))
         {
             go_backward(FRONT_BACK_BLOCK_DISTANCE);
             current_column++;
@@ -166,26 +166,26 @@ void move_toward_goal()
     }
     else if(facing == 2) // right
     {
-        if(maze[current_row][current_column+1][0]==(maze[current_row][current_column][0]-1))
+        if(goal_maze[current_row][current_column+1]==(goal_maze[current_row][current_column]-1))
         {
             go_forward(FRONT_BACK_BLOCK_DISTANCE);
             current_column++;
         }
-        else if(maze[current_row-1][current_column][0]==(maze[current_row][current_column][0]-1))
+        else if(goal_maze[current_row-1][current_column]==(goal_maze[current_row][current_column]-1))
         {
             turn_left();
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
             facing = 0;
             current_row--;
         }
-        else if(maze[current_row+1][current_column][0]==(maze[current_row][current_column][0]-1))
+        else if(goal_maze[current_row+1][current_column]==(goal_maze[current_row][current_column]-1))
         {
             turn_right();
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
             facing = 3;
             current_row++;
         }
-        else if(maze[current_row][current_column-1][0]==(maze[current_row][current_column][0]-1))
+        else if(goal_maze[current_row][current_column-1]==(goal_maze[current_row][current_column]-1))
         {
             go_backward(FRONT_BACK_BLOCK_DISTANCE);
             current_column--;
@@ -193,26 +193,26 @@ void move_toward_goal()
     }
     else if(facing == 3) // down
     {
-        if(maze[current_row+1][current_column][0]==(maze[current_row][current_column][0]-1))
+        if(goal_maze[current_row+1][current_column]==(goal_maze[current_row][current_column]-1))
         {
             go_forward(FRONT_BACK_BLOCK_DISTANCE);
             current_row++;
         }
-        else if(maze[current_row][current_column+1][0]==(maze[current_row][current_column][0]-1))
+        else if(goal_maze[current_row][current_column+1]==(goal_maze[current_row][current_column]-1))
         {
             turn_left();
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
             facing = 2;
             current_column++;
         }
-        else if(maze[current_row][current_column-1][0]==(maze[current_row][current_column][0]-1))
+        else if(goal_maze[current_row][current_column-1]==(goal_maze[current_row][current_column]-1))
         {
             turn_right();
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
             facing = 3;
             current_column--;
         }
-        else if(maze[current_row-1][current_column][0]==(maze[current_row][current_column][0]-1))
+        else if(goal_maze[current_row-1][current_column]==(goal_maze[current_row][current_column]-1))
         {
             go_backward(FRONT_BACK_BLOCK_DISTANCE);
             current_row--;
