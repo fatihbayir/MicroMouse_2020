@@ -588,6 +588,8 @@ bool check_wall_right()
 
 void go_forward(long distance)
 {
+    RIGHT_ENCODER_FLAG=0;
+    LEFT_ENCODER_FLAG=0;
     distance=((distance*820)/(3*PI));
     long distance_right=abs(ENCODER_RIGHT.read());
     long distance_left=abs(ENCODER_LEFT.read());
@@ -627,7 +629,7 @@ void go_forward(long distance)
                 OldPositionRight = NewPositionRight;
             }
         }
-        else if((NewPositionRight>(distance*0.7+distance_right)&&NewPositionRight<(distance+distance_right))&&!(b==1&&previous_error<0.2))
+        else if((NewPositionRight>(distance*0.7+distance_right)&&NewPositionRight<(distance+distance_right))&&!(LEFT_ENCODER_FLAG==1&&previous_error<0.2))
         {
             analogWrite(RIGHT_MOTOR_1,88);
             analogWrite(RIGHT_MOTOR_2,0);
@@ -664,7 +666,7 @@ void go_forward(long distance)
                 OldPositionLeft = NewPositionLeft;
             }
         }
-        else if((NewPositionLeft>(distance*0.7+distance_left)&&NewPositionLeft<(distance+distance_left))&&!(a==1&&previous_error<0.2))
+        else if((NewPositionLeft>(distance*0.7+distance_left)&&NewPositionLeft<(distance+distance_left))&&!(RIGHT_ENCODER_FLAG==1&&previous_error<0.2))
         {
             analogWrite(LEFT_MOTOR_1,98);
             analogWrite(LEFT_MOTOR_2,0);
@@ -693,6 +695,8 @@ void go_forward(long distance)
 
 void go_backward(long distance)
 {
+    RIGHT_ENCODER_FLAG=0;
+    LEFT_ENCODER_FLAG=0;
     distance=((distance*820)/(3*PI))*0.9;
     long distance_right=(ENCODER_RIGHT.read());
     long distance_left=(ENCODER_LEFT.read());
@@ -883,10 +887,10 @@ void turn_left()
     {
         if(RIGHT_ENCODER_FLAG!=1)
         {
-            analogWrite(5,0);
+            analogWrite(RIGHT_MOTOR_2,0);
             analogWrite(RIGHT_MOTOR_1,255);
         }
-        if(flag2!=1)
+        if(LEFT_ENCODER_FLAG!=1)
         {
             analogWrite(LEFT_MOTOR_2,255);
             analogWrite(LEFT_MOTOR_1,0);
