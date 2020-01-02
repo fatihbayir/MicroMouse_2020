@@ -683,7 +683,7 @@ void go_forward(long distance)
             analogWrite(LEFT_MOTOR_2,0);
             LEFT_ENCODER_FLAG=1;
         }
-        if((a+b)==2)
+        if((RIGHT_ENCODER_FLAG+LEFT_ENCODER_FLAG)==2)
         {
             RIGHT_ENCODER_FLAG=0;
             LEFT_ENCODER_FLAG=0;
