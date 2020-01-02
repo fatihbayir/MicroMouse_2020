@@ -3,9 +3,6 @@
 // Authors - Ashutosh Sharma (ashutoshshrm529)
 //           Hardik Jain (nepython)
 //
-// Last edit
-// 28 Nov, 2019 - changed the algorithm to a better one.
-//                maze testing with new algorithm begins.
 //
 // FUNCTIONS
 //
@@ -13,33 +10,37 @@
     void initialize_maze(); // initializes the maze to original value(with no knowledge of walls)
     void update_walls(); // checks and updates the walls in the maze array
     void update_maze(); // updates the maze using the floodfill algorithm
-    void move_min(); // move to the adjacent square with minimum number (flood fill)
-    void move_max(); // move to the adjacent square with mazimum number (outward flood fill)
+    void move_toward_goal(); // move to the adjacent square with minimum number (flood fill)
 
 //  WALL DETECTION
+    float Forward_Distance(); // Returns the distance as read by the forward ir using SharpIR Library
+    float Left_Distance(); // Returns the distance as read by the left ir using SharpIR Library
+    float Right_Distance(); // Returns the distance as read by the right ir using SharpIR Library
     bool check_wall_forward(); // Returns true if there is a wall in front of the mouse else false.
     bool check_wall_left(); // Returns true if there is a wall to left of the mouse else false.
     bool check_wall_right(); // Returns true if there is a wall to right of the mouse else false.
 
 //  MOTOR
-    void go_forward(int ); // makes the mouse go certain distance forward
+    void go_forward(long ); // makes the mouse go certain distance forward
+    void go_backward(long ); // makes the mouse go certain distance backward
     void turn_right(); // turns the mouse a quarter circle to right
     void turn_left(); // turns the mouse a quarter circle to left
-
-//  ENCODER
-    int encoder_right();
-    int encoder_left();
+    void drive_straight(float, float); // makes the mouse move in a straight line using pid
 
 //
 // GLOBAL VARIABLES
 //
 //  FLOODFILL
     #define MAZE_SIZE 16
-    int maze[MAZE_SIZE][MAZE_SIZE][5]; // value,up,left,right,down
+
+    int goal_maze[MAZE_SIZE][MAZE_SIZE];
+    int wall_maze[MAZE_SIZE][MAZE_SIZE][4]; // up,left,right,down
 
     int facing = 0; // 0 for up; 1 for left; 2 for right; 3 for down
-    int current_row = 0;
-    int current_column = MAZE_SIZE-1;
+    int current_row = MAZE_SIZE-1;
+    int current_column = 0;
+    int GOAL_ROW = 3; // definition of the goal where the mouse wants to go to
+    int GOAL_COLUMN = 3;
 
 //  WALL DETECTION
     #define FRONT_IR_PIN A0 // front ir data pin
@@ -81,7 +82,7 @@
     int RIGHT_ENCODER_FLAG=0;      //Encoder flags
     int LEFT_ENCODER_FLAG=0;
 
-    #define PI 3.14159
+    #define PI 3.141593
 
     static int previous_error = 0;    //Error used in PID
 
@@ -99,39 +100,15 @@ void setup()
     pinMode(RIGHT_MOTOR_2, OUTPUT);
     pinMode(LEFT_MOTOR_2, OUTPUT);
 
-    // ENCODER
-    attachInterrupt(digitalPinToInterrupt(RIGHT_ENCODER_DISTANCE),encoder_right,RISING );
-    // attachInterrupt(digitalPinToInterrupt(RIGHT_ENCODER_DIRECTION),inr,RISING );
-    attachInterrupt(digitalPinToInterrupt(LEFT_ENCODER_DISTANCE),encoder_left,RISING );
-    // attachInterrupt(digitalPinToInterrupt(LEFT_ENCODER_DIRECTION),inr,RISING );
-
     initialize_maze();
 }
 
 void loop()
 {
-    while(maze[current_row][current_column][0]!=0)
-    {
-        update_walls();
-        update_maze();
-        move_min();
-    }
 
-    turn_right();
-    turn_right();
-
-    while(maze[current_row][current_column][0]!=0)
-    {
-        update_walls();
-        update_maze();
-        move_max();
-    }
-
-    turn_right();
-    turn_right();
 }
 
-void move_min()
+void move_toward_goal()
 {
     if(facing == 0) // up
     {
@@ -156,10 +133,7 @@ void move_min()
         }
         else if(maze[current_row+1][current_column][0]==(maze[current_row][current_column][0]-1))
         {
-            turn_right();
-            turn_right();
-            go_forward(FRONT_BACK_BLOCK_DISTANCE);
-            facing = 3;
+            go_backward(FRONT_BACK_BLOCK_DISTANCE);
             current_row++;
         }
     }
@@ -186,10 +160,7 @@ void move_min()
         }
         else if(maze[current_row][current_column+1][0]==(maze[current_row][current_column][0]-1))
         {
-            turn_right();
-            turn_right();
-            go_forward(FRONT_BACK_BLOCK_DISTANCE);
-            facing = 2;
+            go_backward(FRONT_BACK_BLOCK_DISTANCE);
             current_column++;
         }
     }
@@ -216,10 +187,7 @@ void move_min()
         }
         else if(maze[current_row][current_column-1][0]==(maze[current_row][current_column][0]-1))
         {
-            turn_right();
-            turn_right();
-            go_forward(FRONT_BACK_BLOCK_DISTANCE);
-            facing = 1;
+            go_backward(FRONT_BACK_BLOCK_DISTANCE);
             current_column--;
         }
     }
@@ -246,134 +214,7 @@ void move_min()
         }
         else if(maze[current_row-1][current_column][0]==(maze[current_row][current_column][0]-1))
         {
-            turn_right();
-            turn_right();
-            go_forward(FRONT_BACK_BLOCK_DISTANCE);
-            facing = 0;
-            current_row--;
-        }
-    }
-}
-
-void move_max()
-{
-    if(facing == 0) // up
-    {
-        if(maze[current_row-1][current_column][0]==(maze[current_row][current_column][0]+1))
-        {
-            go_forward(FRONT_BACK_BLOCK_DISTANCE);
-            current_row--;
-        }
-        else if(maze[current_row][current_column-1][0]==(maze[current_row][current_column][0]+1))
-        {
-            turn_left();
-            go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
-            facing = 1;
-            current_column--;
-        }
-        else if(maze[current_row][current_column+1][0]==(maze[current_row][current_column][0]+1))
-        {
-            turn_right();
-            go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
-            facing = 2;
-            current_column++;
-        }
-        else if(maze[current_row+1][current_column][0]==(maze[current_row][current_column][0]+1))
-        {
-            turn_right();
-            turn_right();
-            go_forward(FRONT_BACK_BLOCK_DISTANCE);
-            facing = 3;
-            current_row++;
-        }
-    }
-    else if(facing == 1) // left
-    {
-        if(maze[current_row][current_column-1][0]==(maze[current_row][current_column][0]+1))
-        {
-            go_forward(FRONT_BACK_BLOCK_DISTANCE);
-            current_column--;
-        }
-        else if(maze[current_row+1][current_column][0]==(maze[current_row][current_column][0]+1))
-        {
-            turn_left();
-            go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
-            facing = 3;
-            current_row++;
-        }
-        else if(maze[current_row-1][current_column][0]==(maze[current_row][current_column][0]+1))
-        {
-            turn_right();
-            go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
-            facing = 0;
-            current_row--;
-        }
-        else if(maze[current_row][current_column+1][0]==(maze[current_row][current_column][0]+1))
-        {
-            turn_right();
-            turn_right();
-            go_forward(FRONT_BACK_BLOCK_DISTANCE);
-            facing = 2;
-            current_column++;
-        }
-    }
-    else if(facing == 2) // right
-    {
-        if(maze[current_row][current_column+1][0]==(maze[current_row][current_column][0]+1))
-        {
-            go_forward(FRONT_BACK_BLOCK_DISTANCE);
-            current_column++;
-        }
-        else if(maze[current_row-1][current_column][0]==(maze[current_row][current_column][0]+1))
-        {
-            turn_left();
-            go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
-            facing = 0;
-            current_row--;
-        }
-        else if(maze[current_row+1][current_column][0]==(maze[current_row][current_column][0]+1))
-        {
-            turn_right();
-            go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
-            facing = 3;
-            current_row++;
-        }
-        else if(maze[current_row][current_column-1][0]==(maze[current_row][current_column][0]+1))
-        {
-            turn_right();
-            turn_right();
-            go_forward(FRONT_BACK_BLOCK_DISTANCE);
-            facing = 1;
-            current_column--;
-        }
-    }
-    else if(facing == 3) // down
-    {
-        if(maze[current_row+1][current_column][0]==(maze[current_row][current_column][0]+1))
-        {
-            go_forward(FRONT_BACK_BLOCK_DISTANCE);
-            current_row++;
-        }
-        else if(maze[current_row][current_column+1][0]==(maze[current_row][current_column][0]+1))
-        {
-            turn_left();
-            go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
-            facing = 2;
-            current_column++;
-        }
-        else if(maze[current_row][current_column-1][0]==(maze[current_row][current_column][0]+1))
-        {
-            turn_right();
-            go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
-            facing = 3;
-            current_column--;
-        }
-        else if(maze[current_row-1][current_column][0]==(maze[current_row][current_column][0]+1))
-        {
-            turn_right();
-            turn_right();
-            go_forward(FRONT_BACK_BLOCK_DISTANCE);
-            facing = 0;
+            go_backward(FRONT_BACK_BLOCK_DISTANCE);
             current_row--;
         }
     }
@@ -385,28 +226,28 @@ void update_walls()
     {
         if(check_wall_forward)
         {
-            maze[current_row][current_column][1] = 1;
+            wall_maze[current_row][current_column][0] = 1;
             if((current_row+1)<(MAZE_SIZE-1))
             {
-                maze[current_row + 1][current_column][4] = 1;
+                wall_maze[current_row + 1][current_column][3] = 1;
             }
         }
 
         if(check_wall_left)
         {
-            maze[current_row][current_column][2] = 1;
+            wall_maze[current_row][current_column][1] = 1;
             if((current_column-1)>0)
             {
-                maze[current_row][current_column - 1][3] = 1;
+                wall_maze[current_row][current_column - 1][2] = 1;
             }
         }
 
         if(check_wall_right)
         {
-            maze[current_row][current_column][3] = 1;
+            wall_maze[current_row][current_column][2] = 1;
             if((current_column+1)<(MAZE_SIZE-1))
             {
-                maze[current_row][current_column + 1][2] = 1;
+                wall_maze[current_row][current_column + 1][1] = 1;
             }
         }
     }
@@ -414,28 +255,28 @@ void update_walls()
     {
         if(check_wall_forward)
         {
-            maze[current_row][current_column][2] = 1;
+            wall_maze[current_row][current_column][1] = 1;
             if((current_column-1)>0)
             {
-                maze[current_row][current_column - 1][3] = 1;
+                wall_maze[current_row][current_column - 1][2] = 1;
             }
         }
 
         if(check_wall_left)
         {
-            maze[current_row][current_column][4] = 1;
+            wall_maze[current_row][current_column][3] = 1;
             if((current_row-1)<(MAZE_SIZE-1))
             {
-                maze[current_row - 1][current_column][1] = 1;
+                wall_maze[current_row - 1][current_column][0] = 1;
             }
         }
 
         if(check_wall_right)
         {
-            maze[current_row][current_column][1] = 1;
+            wall_maze[current_row][current_column][0] = 1;
             if((current_row+1)<(MAZE_SIZE-1))
             {
-                maze[current_row + 1][current_column][4] = 1;
+                wall_maze[current_row + 1][current_column][3] = 1;
             }
         }
     }
@@ -443,28 +284,28 @@ void update_walls()
     {
         if(check_wall_forward)
         {
-            maze[current_row][current_column][3] = 1;
+            wall_maze[current_row][current_column][2] = 1;
             if((current_column+1)<(MAZE_SIZE-1))
             {
-                maze[current_row][current_column + 1][2] = 1;
+                wall_maze[current_row][current_column + 1][1] = 1;
             }
         }
 
         if(check_wall_left)
         {
-            maze[current_row][current_column][1] = 1;
+            wall_maze[current_row][current_column][0] = 1;
             if((current_row+1)<(MAZE_SIZE-1))
             {
-                maze[current_row + 1][current_column][4] = 1;
+                wall_maze[current_row + 1][current_column][3] = 1;
             }
         }
 
         if(check_wall_right)
         {
-            maze[current_row][current_column][4] = 1;
+            wall_maze[current_row][current_column][3] = 1;
             if((current_row-1)<(MAZE_SIZE-1))
             {
-                maze[current_row - 1][current_column][1] = 1;
+                wall_maze[current_row - 1][current_column][0] = 1;
             }
         }
     }
@@ -472,28 +313,28 @@ void update_walls()
     {
         if(check_wall_forward)
         {
-            maze[current_row][current_column][4] = 1;
+            wall_maze[current_row][current_column][3] = 1;
             if((current_row-1)<(MAZE_SIZE-1))
             {
-                maze[current_row - 1][current_column][1] = 1;
+                wall_maze[current_row - 1][current_column][0] = 1;
             }
         }
 
         if(check_wall_left)
         {
-            maze[current_row][current_column][3] = 1;
+            wall_maze[current_row][current_column][2] = 1;
             if((current_column+1)<(MAZE_SIZE-1))
             {
-                maze[current_row][current_column + 1][2] = 1;
+                wall_maze[current_row][current_column + 1][1] = 1;
             }
         }
 
         if(check_wall_right)
         {
-            maze[current_row][current_column][2] = 1;
+            wall_maze[current_row][current_column][1] = 1;
             if((current_column-1)>0)
             {
-                maze[current_row][current_column - 1][3] = 1;
+                wall_maze[current_row][current_column - 1][2] = 1;
             }
         }
     }
@@ -506,71 +347,71 @@ void update_maze()
     {
         for(int j = 0; j < MAZE_SIZE; j++)
         {
-            if(!(((i==((MAZE_SIZE/2)-1))&&(j==((MAZE_SIZE/2)-1)))||((i==((MAZE_SIZE/2)-1))&&(j==(MAZE_SIZE/2)))||((i==(MAZE_SIZE/2))&&(j==((MAZE_SIZE/2)-1)))||((i==(MAZE_SIZE/2))&&(j==(MAZE_SIZE/2)))))
+            if(!((i==GOAL_ROW)&&(j==GOAL_COLUMN)))
             {
                 int min = -1;
-                if(maze[i][j][1]==0)
+                if(wall_maze[i][j][0]==0)
                 {
                     if(min==-1)
                     {
-                        min = maze[i-1][j][0];
+                        min = goal_maze[i-1][j];
                     }
                     else
                     {
-                        if(maze[i-1][j][0]<min)
+                        if(goal_maze[i-1][j]<min)
                         {
-                            min = maze[i-1][j][0];
+                            min = goal_maze[i-1][j];
                         }
                     }
                 }
-                if(maze[i][j][2]==0)
+                if(wall_maze[i][j][1]==0)
                 {
                     if(min==-1)
                     {
-                        min = maze[i][j-1][0];
+                        min = goal_maze[i][j-1];
                     }
                     else
                     {
-                        if(maze[i][j-1][0]<min)
+                        if(goal_maze[i][j-1]<min)
                         {
-                            min = maze[i][j-1][0];
+                            min = goal_maze[i][j-1];
                         }
                     }
                 }
-                if(maze[i][j][3]==0)
+                if(wall_maze[i][j][2]==0)
                 {
                     if(min==-1)
                     {
-                        min = maze[i][j+1][0];
+                        min = goal_maze[i][j+1];
                     }
                     else
                     {
-                        if(maze[i][j+1][0]<min)
+                        if(goal_maze[i][j+1]<min)
                         {
-                            min = maze[i][j+1][0];
+                            min = goal_maze[i][j+1];
                         }
                     }
                 }
-                if(maze[i][j][4]==0)
+                if(wall_maze[i][j][3]==0)
                 {
                     if(min==-1)
                     {
-                        min = maze[i+1][j][0];
+                        min = goal_maze[i+1][j];
                     }
                     else
                     {
-                        if(maze[i+1][j][0]<min)
+                        if(goal_maze[i+1][j]<min)
                         {
-                            min = maze[i+1][j][0];
+                            min = goal_maze[i+1][j];
                         }
                     }
                 }
 
                 if(min!=-1)
                 {
-                    if(maze[i][j][0] != (min+1))
+                    if(goal_maze[i][j] != (min+1))
                     {
-                        maze[i][j][0]=(min+1);
+                        goal_maze[i][j]=(min+1);
                         temp = 1;
                     }
                 }
@@ -590,74 +431,114 @@ void update_maze()
 
 void initialize_maze()
 {
-    for(int i = 0; i < (MAZE_SIZE/2); i++)
+    for(int i = 0; i < (GOAL_ROW); i++)
     {
-        for(int j = 0; j < (MAZE_SIZE/2); j++)
+        for(int j = 0; j < (GOAL_COLUMN); j++)
         {
-            maze[i][j][0] = (MAZE_SIZE-((i+1) + (j+1)));
+            goal_maze[i][j] = ((GOAL_ROW+GOAL_COLUMN)-(i + j));
 
             if(i == 0)
             {
-                maze[i][j][1] = 1; // for top boundary
+                wall_maze[i][j][0] = 1; // for top boundary
+            }
+
+            if(i == (MAZE_SIZE-1))
+            {
+                wall_maze[i][j][3] = 1; // for bottom boundary
             }
 
             if(j == 0)
             {
-                maze[i][j][2] = 1; // for left side boundary
-            }
-        }
-    }
-
-    for(int i = 0; i < (MAZE_SIZE/2); i++)
-    {
-        for(int j = (MAZE_SIZE/2); j < MAZE_SIZE; j++)
-        {
-            maze[i][j][0] = (MAZE_SIZE-((i+1) + ((MAZE_SIZE-(j+1))+1)));
-
-            if(i == 0)
-            {
-                maze[i][j][1] = 1; // for top boundary
+                wall_maze[i][j][1] = 1; // for left side boundary
             }
 
             if(j == (MAZE_SIZE-1))
             {
-                maze[i][j][3] = 1; // for right side boundary
+                wall_maze[i][j][2] = 1; // for right side boundary
             }
         }
     }
 
-    for(int i = (MAZE_SIZE/2); i < MAZE_SIZE; i++)
+    for(int i = 0; i < (GOAL_ROW); i++)
     {
-        for(int j = 0; j < (MAZE_SIZE/2); j++)
+        for(int j = (GOAL_COLUMN); j < MAZE_SIZE; j++)
         {
-            maze[i][j][0] = (MAZE_SIZE-(((MAZE_SIZE-(i+1))+1) + (j+1)));
+            goal_maze[i][j] = ((GOAL_ROW+GOAL_COLUMN)-((i+1) + (((GOAL_ROW+GOAL_COLUMN)-(j+1)))));
+
+            if(i == 0)
+            {
+                wall_maze[i][j][0] = 1; // for top boundary
+            }
 
             if(i == (MAZE_SIZE-1))
             {
-                maze[i][j][4] = 1; // for bottom boundary
+                wall_maze[i][j][3] = 1; // for bottom boundary
             }
 
             if(j == 0)
             {
-                maze[i][j][2] = 1; // for left side boundary
-            }
-        }
-    }
-
-    for(int i = (MAZE_SIZE/2); i < MAZE_SIZE; i++)
-    {
-        for(int j = (MAZE_SIZE/2); j < MAZE_SIZE; j++)
-        {
-            maze[i][j][0] = (MAZE_SIZE-(((MAZE_SIZE-(i+1))+1) + ((MAZE_SIZE-(j+1))+1)));
-
-            if(i == (MAZE_SIZE-1))
-            {
-                maze[i][j][4] = 1; // for bottom boundary
+                wall_maze[i][j][1] = 1; // for left side boundary
             }
 
             if(j == (MAZE_SIZE-1))
             {
-                maze[i][j][3] = 1; // for right side boundary
+                wall_maze[i][j][2] = 1; // for right side boundary
+            }
+        }
+    }
+
+    for(int i = (GOAL_ROW); i < MAZE_SIZE; i++)
+    {
+        for(int j = 0; j < (GOAL_COLUMN); j++)
+        {
+            goal_maze[i][j] = ((GOAL_ROW+GOAL_COLUMN)-((((GOAL_ROW+GOAL_COLUMN)-(i+1))) + (j+1)));
+
+            if(i == 0)
+            {
+                wall_maze[i][j][0] = 1; // for top boundary
+            }
+
+            if(i == (MAZE_SIZE-1))
+            {
+                wall_maze[i][j][3] = 1; // for bottom boundary
+            }
+
+            if(j == 0)
+            {
+                wall_maze[i][j][1] = 1; // for left side boundary
+            }
+
+            if(j == (MAZE_SIZE-1))
+            {
+                wall_maze[i][j][2] = 1; // for right side boundary
+            }
+        }
+    }
+
+    for(int i = (GOAL_ROW); i < MAZE_SIZE; i++)
+    {
+        for(int j = (GOAL_COLUMN); j < MAZE_SIZE; j++)
+        {
+            goal_maze[i][j] = ((GOAL_ROW+GOAL_COLUMN)-((((GOAL_ROW+GOAL_COLUMN)-(i+1))+1) + (((GOAL_ROW+GOAL_COLUMN)-(j+1))+1)));
+
+            if(i == 0)
+            {
+                wall_maze[i][j][0] = 1; // for top boundary
+            }
+
+            if(i == (MAZE_SIZE-1))
+            {
+                wall_maze[i][j][3] = 1; // for bottom boundary
+            }
+
+            if(j == 0)
+            {
+                wall_maze[i][j][1] = 1; // for left side boundary
+            }
+
+            if(j == (MAZE_SIZE-1))
+            {
+                wall_maze[i][j][2] = 1; // for right side boundary
             }
         }
     }
