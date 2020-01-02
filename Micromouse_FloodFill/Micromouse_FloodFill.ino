@@ -132,7 +132,7 @@ void move_toward_goal()
             facing = 2;
             current_column++;
         }
-        else if(goal_maze[current_row+1][current_column][0]==(goal_maze[current_row][current_column]-1))
+        else if(goal_maze[current_row+1][current_column]==(goal_maze[current_row][current_column]-1))
         {
             go_backward(FRONT_BACK_BLOCK_DISTANCE);
             current_row++;
