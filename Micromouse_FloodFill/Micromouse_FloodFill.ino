@@ -46,6 +46,7 @@
     #define FRONT_IR_PIN A0 // front ir data pin
     #define LEFT_IR_PIN A1 // left ir data pin
     #define RIGHT_IR_PIN A2 // right ir data pin
+    #define IR_MODEL 430
 
     #define THRESHOLD_FORWARD 8 // the threshold to check if wall present forward
     #define THRESHOLD_LEFT 6 // the threshold to check if wall present left
