@@ -691,6 +691,102 @@ void go_forward(long distance)
     }
 }
 
+void go_backward(long distance)
+{
+    distance=((distance*820)/(3*PI))*0.9;
+    long distance_right=(ENCODER_RIGHT.read());
+    long distance_left=(ENCODER_LEFT.read());
+    long OldPositionRight=(-999);
+    long OldPositionLeft=(-999);
+    long NewPositionRight=(ENCODER_RIGHT.read());
+    long NewPositionLeft=(ENCODER_LEFT.read());
+    while((RIGHT_ENCODER_FLAG!=1)&&(LEFT_ENCODER_FLAG!=1))                //Some shortcoming is not allowing left motor to ro rotate fully
+    {
+        drive_straight(Left_Distance(),Right_Distance());
+        if(NewPositionRight>-distance*0.5+distance_right)
+        {
+            NewPositionRight = (ENCODER_RIGHT.read());
+            if (NewPositionRight != OldPositionRight)
+            {
+            OldPositionRight = NewPositionRight;
+            }
+            analogWrite(RIGHT_MOTOR_2,255);
+            analogWrite(RIGHT_MOTOR_1,0);
+        }
+        else if(NewPositionRight<(-distance*0.5+distance_right)&&NewPositionRight>(-distance*0.7+distance_right))
+        {
+            analogWrite(RIGHT_MOTOR_2,150);
+            analogWrite(RIGHT_MOTOR_1,0);
+            NewPositionRight = (ENCODER_RIGHT.read());
+            if (NewPositionRight != OldPositionRight)
+            {
+                OldPositionRight = NewPositionRight;
+            }
+        }
+        else if((NewPositionRight<(-distance*0.7+distance_right)&&NewPositionRight>(-distance*0.85+distance_right)))
+        {
+            analogWrite(RIGHT_MOTOR_2,123);
+            analogWrite(RIGHT_MOTOR_1,0);
+            NewPositionRight = abs(ENCODER_RIGHT.read());
+            if (NewPositionRight != OldPositionRight)
+            {
+                OldPositionRight = NewPositionRight;
+            }
+        }
+        else
+        {
+            analogWrite(RIGHT_MOTOR_2,0);
+            analogWrite(RIGHT_MOTOR_1,0);
+            RIGHT_ENCODER_FLAG=1;
+        }
+
+        if(NewPositionLeft>-distance*0.5+distance_left)
+        {
+            NewPositionLeft = (ENCODER_LEFT.read());
+            if (NewPositionLeft != OldPositionLeft)
+            {
+                OldPositionLeft = NewPositionLeft;
+            }
+            analogWrite(LEFT_MOTOR_2,200);
+            analogWrite(LEFT_MOTOR_1,0);
+        }
+        else if(NewPositionLeft<(-distance*0.5+distance_left)&&NewPositionLeft>(-distance*0.7+distance_left))
+        {
+            analogWrite(LEFT_MOTOR_2,137);
+            analogWrite(LEFT_MOTOR_1,0);
+            NewPositionLeft = (ENCODER_LEFT.read());
+            if (NewPositionLeft != OldPositionLeft)
+            {
+                OldPositionLeft = NewPositionLeft;
+            }
+        }
+        else if((NewPositionLeft<(-distance*0.7+distance_left)&&NewPositionLeft>(-distance+distance_left)))
+        {
+            analogWrite(LEFT_MOTOR_2,125);
+            analogWrite(LEFT_MOTOR_1,0);
+            NewPositionLeft = abs(ENCODER_LEFT.read());
+            if (NewPositionLeft != OldPositionLeft)
+            {
+                OldPositionLeft = NewPositionLeft;
+            }
+        }
+        else
+        {
+            analogWrite(LEFT_MOTOR_1,0);
+            analogWrite(LEFT_MOTOR_2,0);
+            LEFT_ENCODER_FLAG=1;
+        }
+        if((RIGHT_ENCODER_FLAG+LEFT_ENCODER_FLAG)==2)
+        {
+            RIGHT_ENCODER_FLAG=0;
+            LEFT_ENCODER_FLAG=0;
+            LEFT_MOTOR_SPEED=255;
+            RIGHT_MOTOR_SPEED=255;
+            return;
+        }
+    }
+}
+
 void turn_right()
 {
     // turn right and go one block ahead
