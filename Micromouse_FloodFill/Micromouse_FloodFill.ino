@@ -201,20 +201,15 @@ void setup()
     pinMode(RIGHT_MOTOR_2, OUTPUT);
 
     pinMode(LEFT_MOTOR_2, OUTPUT);
-<<<<<<< HEAD
-=======
 
-
-
-    initialize_maze();
->>>>>>> 5f85821086115bcf095b249d805aedac875b690e
 }
 
 
 
 void loop()
-<<<<<<< HEAD
 {
+    initialize_maze();
+
     GOAL_ROW=(MAZE_SIZE/2);
     GOAL_COLUMN=(MAZE_SIZE/2);
 
@@ -226,6 +221,8 @@ void loop()
         delay(500);
     }
 
+    initialize_maze();
+
     GOAL_ROW=(MAZE_SIZE-1);
     GOAL_COLUMN=0;
 
@@ -236,11 +233,6 @@ void loop()
         move_toward_goal();
         delay(500);
     }
-=======
-
-{
-   
->>>>>>> 5f85821086115bcf095b249d805aedac875b690e
 }
 
 
@@ -258,11 +250,7 @@ void move_toward_goal()
         {
 
             go_forward(FRONT_BACK_BLOCK_DISTANCE);
-<<<<<<< HEAD
             delay(500);
-=======
-
->>>>>>> 5f85821086115bcf095b249d805aedac875b690e
             current_row--;
 
         }
@@ -272,15 +260,9 @@ void move_toward_goal()
         {
 
             turn_left();
-<<<<<<< HEAD
             delay(500);
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
             delay(500);
-=======
-
-            go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
-
->>>>>>> 5f85821086115bcf095b249d805aedac875b690e
             facing = 1;
 
             current_column--;
@@ -292,15 +274,9 @@ void move_toward_goal()
         {
 
             turn_right();
-<<<<<<< HEAD
             delay(500);
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
             delay(500);
-=======
-
-            go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
-
->>>>>>> 5f85821086115bcf095b249d805aedac875b690e
             facing = 2;
 
             current_column++;
@@ -312,11 +288,7 @@ void move_toward_goal()
         {
 
             go_backward(FRONT_BACK_BLOCK_DISTANCE);
-<<<<<<< HEAD
             delay(500);
-=======
-
->>>>>>> 5f85821086115bcf095b249d805aedac875b690e
             current_row++;
 
         }
@@ -332,11 +304,7 @@ void move_toward_goal()
         {
 
             go_forward(FRONT_BACK_BLOCK_DISTANCE);
-<<<<<<< HEAD
             delay(500);
-=======
-
->>>>>>> 5f85821086115bcf095b249d805aedac875b690e
             current_column--;
 
         }
@@ -346,15 +314,9 @@ void move_toward_goal()
         {
 
             turn_left();
-<<<<<<< HEAD
             delay(500);
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
             delay(500);
-=======
-
-            go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
-
->>>>>>> 5f85821086115bcf095b249d805aedac875b690e
             facing = 3;
 
             current_row++;
@@ -366,15 +328,9 @@ void move_toward_goal()
         {
 
             turn_right();
-<<<<<<< HEAD
             delay(500);
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
             delay(500);
-=======
-
-            go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
-
->>>>>>> 5f85821086115bcf095b249d805aedac875b690e
             facing = 0;
 
             current_row--;
@@ -386,11 +342,7 @@ void move_toward_goal()
         {
 
             go_backward(FRONT_BACK_BLOCK_DISTANCE);
-<<<<<<< HEAD
             delay(500);
-=======
-
->>>>>>> 5f85821086115bcf095b249d805aedac875b690e
             current_column++;
 
         }
@@ -406,11 +358,7 @@ void move_toward_goal()
         {
 
             go_forward(FRONT_BACK_BLOCK_DISTANCE);
-<<<<<<< HEAD
             delay(500);
-=======
-
->>>>>>> 5f85821086115bcf095b249d805aedac875b690e
             current_column++;
 
         }
@@ -420,15 +368,9 @@ void move_toward_goal()
         {
 
             turn_left();
-<<<<<<< HEAD
             delay(500);
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
             delay(500);
-=======
-
-            go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
-
->>>>>>> 5f85821086115bcf095b249d805aedac875b690e
             facing = 0;
 
             current_row--;
@@ -440,15 +382,9 @@ void move_toward_goal()
         {
 
             turn_right();
-<<<<<<< HEAD
             delay(500);
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
             delay(500);
-=======
-
-            go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
-
->>>>>>> 5f85821086115bcf095b249d805aedac875b690e
             facing = 3;
 
             current_row++;
@@ -460,11 +396,7 @@ void move_toward_goal()
         {
 
             go_backward(FRONT_BACK_BLOCK_DISTANCE);
-<<<<<<< HEAD
             delay(500);
-=======
-
->>>>>>> 5f85821086115bcf095b249d805aedac875b690e
             current_column--;
 
         }
@@ -480,11 +412,7 @@ void move_toward_goal()
         {
 
             go_forward(FRONT_BACK_BLOCK_DISTANCE);
-<<<<<<< HEAD
             delay(500);
-=======
-
->>>>>>> 5f85821086115bcf095b249d805aedac875b690e
             current_row++;
 
         }
@@ -494,15 +422,9 @@ void move_toward_goal()
         {
 
             turn_left();
-<<<<<<< HEAD
             delay(500);
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
             delay(500);
-=======
-
-            go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
-
->>>>>>> 5f85821086115bcf095b249d805aedac875b690e
             facing = 2;
 
             current_column++;
@@ -514,15 +436,9 @@ void move_toward_goal()
         {
 
             turn_right();
-<<<<<<< HEAD
             delay(500);
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
             delay(500);
-=======
-
-            go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
-
->>>>>>> 5f85821086115bcf095b249d805aedac875b690e
             facing = 3;
 
             current_column--;
@@ -534,11 +450,7 @@ void move_toward_goal()
         {
 
             go_backward(FRONT_BACK_BLOCK_DISTANCE);
-<<<<<<< HEAD
             delay(500);
-=======
-
->>>>>>> 5f85821086115bcf095b249d805aedac875b690e
             current_row--;
 
         }
@@ -1688,11 +1600,11 @@ void go_backward(long distance)
     }
 
     analogWrite(RIGHT_MOTOR_1,0);
-    
+
     analogWrite(RIGHT_MOTOR_2,0);
-    
+
     analogWrite(LEFT_MOTOR_1,0);
-    
+
     analogWrite(LEFT_MOTOR_2,0);
 
 }
