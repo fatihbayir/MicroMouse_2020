@@ -100,13 +100,31 @@ void setup()
     pinMode(LEFT_MOTOR_1, OUTPUT);
     pinMode(RIGHT_MOTOR_2, OUTPUT);
     pinMode(LEFT_MOTOR_2, OUTPUT);
-
-    initialize_maze();
 }
 
 void loop()
 {
+    GOAL_ROW=(MAZE_SIZE/2);
+    GOAL_COLUMN=(MAZE_SIZE/2);
 
+    while(!((current_row==GOAL_ROW)&&(current_column==GOAL_COLUMN)))
+    {
+        update_walls();
+        update_maze();
+        move_toward_goal();
+        delay(500);
+    }
+
+    GOAL_ROW=(MAZE_SIZE-1);
+    GOAL_COLUMN=0;
+
+    while(!((current_row==GOAL_ROW)&&(current_column==GOAL_COLUMN)))
+    {
+        update_walls();
+        update_maze();
+        move_toward_goal();
+        delay(500);
+    }
 }
 
 void move_toward_goal()
@@ -116,25 +134,31 @@ void move_toward_goal()
         if(goal_maze[current_row-1][current_column]==(goal_maze[current_row][current_column]-1))
         {
             go_forward(FRONT_BACK_BLOCK_DISTANCE);
+            delay(500);
             current_row--;
         }
         else if(goal_maze[current_row][current_column-1]==(goal_maze[current_row][current_column]-1))
         {
             turn_left();
+            delay(500);
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
+            delay(500);
             facing = 1;
             current_column--;
         }
         else if(goal_maze[current_row][current_column+1]==(goal_maze[current_row][current_column]-1))
         {
             turn_right();
+            delay(500);
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
+            delay(500);
             facing = 2;
             current_column++;
         }
         else if(goal_maze[current_row+1][current_column]==(goal_maze[current_row][current_column]-1))
         {
             go_backward(FRONT_BACK_BLOCK_DISTANCE);
+            delay(500);
             current_row++;
         }
     }
@@ -143,25 +167,31 @@ void move_toward_goal()
         if(goal_maze[current_row][current_column-1]==(goal_maze[current_row][current_column]-1))
         {
             go_forward(FRONT_BACK_BLOCK_DISTANCE);
+            delay(500);
             current_column--;
         }
         else if(goal_maze[current_row+1][current_column]==(goal_maze[current_row][current_column]-1))
         {
             turn_left();
+            delay(500);
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
+            delay(500);
             facing = 3;
             current_row++;
         }
         else if(goal_maze[current_row-1][current_column]==(goal_maze[current_row][current_column]-1))
         {
             turn_right();
+            delay(500);
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
+            delay(500);
             facing = 0;
             current_row--;
         }
         else if(goal_maze[current_row][current_column+1]==(goal_maze[current_row][current_column]-1))
         {
             go_backward(FRONT_BACK_BLOCK_DISTANCE);
+            delay(500);
             current_column++;
         }
     }
@@ -170,25 +200,31 @@ void move_toward_goal()
         if(goal_maze[current_row][current_column+1]==(goal_maze[current_row][current_column]-1))
         {
             go_forward(FRONT_BACK_BLOCK_DISTANCE);
+            delay(500);
             current_column++;
         }
         else if(goal_maze[current_row-1][current_column]==(goal_maze[current_row][current_column]-1))
         {
             turn_left();
+            delay(500);
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
+            delay(500);
             facing = 0;
             current_row--;
         }
         else if(goal_maze[current_row+1][current_column]==(goal_maze[current_row][current_column]-1))
         {
             turn_right();
+            delay(500);
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
+            delay(500);
             facing = 3;
             current_row++;
         }
         else if(goal_maze[current_row][current_column-1]==(goal_maze[current_row][current_column]-1))
         {
             go_backward(FRONT_BACK_BLOCK_DISTANCE);
+            delay(500);
             current_column--;
         }
     }
@@ -197,25 +233,31 @@ void move_toward_goal()
         if(goal_maze[current_row+1][current_column]==(goal_maze[current_row][current_column]-1))
         {
             go_forward(FRONT_BACK_BLOCK_DISTANCE);
+            delay(500);
             current_row++;
         }
         else if(goal_maze[current_row][current_column+1]==(goal_maze[current_row][current_column]-1))
         {
             turn_left();
+            delay(500);
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
+            delay(500);
             facing = 2;
             current_column++;
         }
         else if(goal_maze[current_row][current_column-1]==(goal_maze[current_row][current_column]-1))
         {
             turn_right();
+            delay(500);
             go_forward(LEFT_RIGHT_BLOCK_DISTANCE);
+            delay(500);
             facing = 3;
             current_column--;
         }
         else if(goal_maze[current_row-1][current_column]==(goal_maze[current_row][current_column]-1))
         {
             go_backward(FRONT_BACK_BLOCK_DISTANCE);
+            delay(500);
             current_row--;
         }
     }
