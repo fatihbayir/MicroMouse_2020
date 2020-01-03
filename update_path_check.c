@@ -32,54 +32,54 @@ void print_maze()
         {
             if(wall_maze[i][j][0]==1)
             {
-                printf("   --   ");
+                Serial.println("   --   ");
             }
             else
             {
-                printf("        ");
+                Serial.println("        ");
             }
         }
-        printf("\n");
+        Serial.println("\n");
         for(int j = 0; j < MAZE_SIZE; j++)
         {
             if(wall_maze[i][j][1]==1)
             {
-                printf(" | ");
+                Serial.println(" | ");
             }
             else
             {
-                printf("   ");
+                Serial.println("   ");
             }
             if(goal_maze[i][j]<10)
             {
-                printf(" %d", goal_maze[i][j]);
+                Serial.println(" %d", goal_maze[i][j]);
             }
             else
             {
-                printf("%d", goal_maze[i][j]);
+                Serial.println("%d", goal_maze[i][j]);
             }
             if(wall_maze[i][j][2]==1)
             {
-                printf(" | ");
+                Serial.println(" | ");
             }
             else
             {
-                printf("   ");
+                Serial.println("   ");
             }
         }
-        printf("\n");
+        Serial.println("\n");
         for(int j = 0; j < MAZE_SIZE; j++)
         {
             if(wall_maze[i][j][3]==1)
             {
-                printf("   --   ");
+                Serial.println("   --   ");
             }
             else
             {
-                printf("        ");
+                Serial.println("        ");
             }
         }
-        printf("\n");
+        Serial.println("\n");
     }
 }
 void initialize_maze()
