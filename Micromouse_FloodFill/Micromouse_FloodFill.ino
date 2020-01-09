@@ -1279,7 +1279,7 @@ void go_forward(long distance)
 
     {
 
-        if (Forward_Distance<THRESHOLD_FORWARD)
+        if (Forward_Distance()<THRESHOLD_FORWARD)
 
         {
 
